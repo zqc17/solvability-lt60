@@ -12,3 +12,4 @@ import SolvabilityLt60.Lemmas
 import SolvabilityLt60.OrderLe6
 import SolvabilityLt60.OrderLe12
 import SolvabilityLt60.OrderLe24
+import SolvabilityLt60.SpecialCases
