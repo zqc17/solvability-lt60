@@ -9,7 +9,6 @@ import Mathlib.GroupTheory.IndexNormal
 import SolvabilityLt60.SimplicityLt60.Basic
 import SolvabilityLt60.SimplicityLt60.Card
 import SolvabilityLt60.Nat
--- import Mathlib
 
 variable {G : Type*} [Group G]
 
@@ -18,7 +17,44 @@ lemma isSolvable_of_subgroup_of_quot {N : Subgroup G} (h : N.Normal)
     [IsSolvable N] [IsSolvable (G ⧸ N)] : IsSolvable G := by
   exact solvable_of_ker_le_range (Subgroup.subtype N) (QuotientGroup.mk' N) (by simp)
 
+/-- If $G$ is not trivial and not simple then there exist proper normal subgroup $H$ of $G$ that is not trivial. -/
+lemma exists_lt_lt_of_not_isSimpleGroup [Nontrivial G] (h : ¬IsSimpleGroup G) : ∃ H : Subgroup G, H.Normal ∧ ⊥ < H ∧ H < ⊤ := by
+  contrapose! h
+  exact {
+    exists_pair_ne := by
+      exact exists_pair_ne G
+    eq_bot_or_eq_top_of_normal := by
+      intro H Hnormal
+      rcases eq_or_ne H ⊥ with rfl | nebot
+      . left; rfl
+      . specialize h H Hnormal (by exact Ne.bot_lt' (id (Ne.symm nebot)))
+        right
+        exact not_lt_top_iff.mp h}
+
 variable [Finite G]
+
+/-- If $H$ is a proper subgroup of $G$ then $|H| < |G|$. -/
+lemma card_lt_of_lt_top {H : Subgroup G} (h : H < ⊤) : Nat.card H < Nat.card G := by
+  rw [lt_iff_le_and_ne]
+  constructor
+  . rw [← Subgroup.card_top (G := G)]
+    apply Subgroup.card_le_of_le
+    exact h.le
+  . rw [ne_eq, Subgroup.card_eq_iff_eq_top]
+    exact h.ne
+
+/-- If $H$ is a proper subgroup of $G$ then $|H| \leq |G|/2$. -/
+lemma card_le_card_div_two {H : Subgroup G} (h : H < ⊤) : Nat.card H ≤ Nat.card G / 2 := by
+  apply le_div_two_of_lt_of_dvd
+  exact card_lt_of_lt_top h
+  exact Subgroup.card_subgroup_dvd_card H
+
+/-- If $H$ is not trivial then $|G/H| \leq |G|/2$. -/
+lemma card_quot_le_card_div_two {H : Subgroup G} (h : ⊥ < H) : Nat.card (G ⧸ H) ≤ Nat.card G / 2 := by
+  rw [card_quot_eq_card_div_card]
+  apply div_le_div_two_of_one_lt
+  contrapose! h
+  simp [show H = ⊥ from Subgroup.eq_bot_of_card_le H h]
 
 /-- p-groups are solvable. -/
 lemma isSolvable_of_card_prime_pow {p n : ℕ} (hp : p.Prime) (hcard : Nat.card G = p ^ n) :
