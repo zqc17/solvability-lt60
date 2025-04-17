@@ -64,3 +64,23 @@ lemma isSolvable_of_card_2pn {p n : ℕ} (hp : p.Prime) (hpgt : 2 < p) (hcard : 
       rw [card_quot_eq_card_div_card, pow_one, Sylow.card_eq_multiplicity, hcard,
         factorization_p_2pn hp hpgt, Nat.mul_div_cancel _ (by positivity)]
   exact isSolvable_of_subgroup_of_quot sylow_normal
+
+/-- If $|G|=p^2*q$ and $p^2 < q$ then $G$ is solvable. -/
+lemma isSolvable_of_lt_of_card_p2q {p q : ℕ} (hp : p.Prime) (hq : q.Prime) (hlt : p^2 < q) (hcard : Nat.card G = p ^ 2 * q) :
+    IsSolvable G := by
+  have : 2 ≤ p := Nat.Prime.two_le hp
+  have : 2 ≤ q := Nat.Prime.two_le hq
+  have : Fact q.Prime := ⟨hq⟩
+  have modq_eq_one := card_sylow_modEq_one q G
+  have dvd_index := Sylow.card_dvd_index (default : Sylow q G)
+  rw [index_sylow_eq_ord_compl, hcard, factorization_q_p2q hp hq (by nlinarith), pow_one,
+    Nat.mul_div_cancel _ (by omega)] at dvd_index
+  have sylow_normal : ((default : Sylow q G) : Subgroup G).Normal := by
+    apply sylow_normal_of_card_eq_one
+    rwa [Nat.ModEq, Nat.mod_eq_of_lt (lt_of_le_of_lt (Nat.le_of_dvd (by positivity) dvd_index) hlt),
+      Nat.mod_eq_of_lt (by omega)] at modq_eq_one
+  have : IsSolvable (G ⧸ ((default : Sylow q G) : Subgroup G)) := by
+    apply isSolvable_of_card_prime_pow hp (n := 2)
+    rw [card_quot_eq_card_div_card, Sylow.card_eq_multiplicity, hcard,
+      factorization_q_p2q hp hq (by nlinarith), pow_one, Nat.mul_div_cancel _ (by positivity)]
+  exact isSolvable_of_subgroup_of_quot sylow_normal
