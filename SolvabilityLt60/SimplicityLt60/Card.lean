@@ -15,6 +15,12 @@ lemma card_eq_iff_of_le {H K : Subgroup G} [Finite (H.subgroupOf K)] (hle : H �
   rwa [← Subgroup.subgroupOf_eq_top, ← Subgroup.card_eq_iff_eq_top,
     Nat.card_congr <| (Subgroup.subgroupOfEquivOfLe hle).1]
 
+/-- $|G/H| = |G| / |H|$ -/
+lemma card_quot_eq_card_div_card (H : Subgroup G) [Finite H] : Nat.card (G ⧸ H) = Nat.card G / Nat.card H := by
+  symm
+  apply Nat.div_eq_of_eq_mul_left (by simp)
+  exact Subgroup.card_eq_card_quotient_mul_card_subgroup _
+
 variable [Fintype G]
 
 open Classical

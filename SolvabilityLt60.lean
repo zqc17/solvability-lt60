@@ -8,3 +8,4 @@ import SolvabilityLt60.SimplicityLt60.Order48
 import SolvabilityLt60.SimplicityLt60.Card
 import SolvabilityLt60.SimplicityLt60.Order30
 import SolvabilityLt60.SimplicityLt60.Order56
+import SolvabilityLt60.Lemmas
