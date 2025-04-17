@@ -5,9 +5,11 @@ Authors: Zhang Qinchuan
 -/
 import Mathlib.GroupTheory.Solvable
 import Mathlib.GroupTheory.Nilpotent
+import Mathlib.GroupTheory.IndexNormal
 import SolvabilityLt60.SimplicityLt60.Basic
 import SolvabilityLt60.SimplicityLt60.Card
 import SolvabilityLt60.Nat
+-- import Mathlib
 
 variable {G : Type*} [Group G]
 
@@ -50,3 +52,15 @@ lemma isSolvable_of_card_pq {p q : ℕ} (hp : p.Prime) (hq : q.Prime) (hpq : p �
   . have : 2 ≤ p := Nat.Prime.two_le hp
     rw [h, Nat.ModEq, Nat.mod_eq_of_lt (by omega), Nat.mod_eq_of_lt hq.one_lt] at modq_eq_one
     omega
+
+/-- If $|G|=2p^n$ then $G$ is solvable where $p$ is a prime number greater than $2$. -/
+lemma isSolvable_of_card_2pn {p n : ℕ} (hp : p.Prime) (hpgt : 2 < p) (hcard : Nat.card G = 2 * p ^ n) : IsSolvable G := by
+  have : Fact p.Prime := ⟨hp⟩
+  have sylow_normal : ((default : Sylow p G) : Subgroup G).Normal := by
+    apply Subgroup.normal_of_index_eq_two
+    rw [index_sylow_eq_ord_compl, hcard, factorization_p_2pn hp hpgt, Nat.mul_div_cancel _ (by positivity)]
+  have : IsSolvable (G ⧸ ((default : Sylow p G) : Subgroup G)) := by
+      apply isSolvable_of_card_prime_pow Nat.prime_two (n := 1)
+      rw [card_quot_eq_card_div_card, pow_one, Sylow.card_eq_multiplicity, hcard,
+        factorization_p_2pn hp hpgt, Nat.mul_div_cancel _ (by positivity)]
+  exact isSolvable_of_subgroup_of_quot sylow_normal

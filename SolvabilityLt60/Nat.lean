@@ -33,12 +33,12 @@ lemma factorization_q_pq {p q : ℕ} (hp : p.Prime) (hq : q.Prime) (h : p ≠ q)
   rw [Nat.factorization_def _ hq, padicValNat.mul hp.ne_zero hq.ne_zero, padicValNat.self hq.one_lt,
     padicValNat_eq_zero_of_ne_of_prime hp hq h, zero_add]
 
-/-- If prime number $p$ is greater than $2$ then `(2 * p ^ 2).factorization p = 2`. -/
-lemma factorization_p_2p2 {p : ℕ} (hp : p.Prime) (hpgt : 2 < p) :
-    (2 * p ^ 2).factorization p = 2 := by
+/-- If prime number $p$ is greater than $2$ then `(2 * p ^ n).factorization p = n`. -/
+lemma factorization_p_2pn {p : ℕ} (hp : p.Prime) (hpgt : 2 < p) (n : ℕ) :
+    (2 * p ^ n).factorization p = n := by
   have : Fact p.Prime := ⟨hp⟩
   rw [Nat.factorization_def _ hp, padicValNat.mul (by norm_num) (by positivity), padicValNat.pow _ hp.ne_zero,
-    padicValNat.self hp.one_lt, padicValNat_eq_zero_of_ne_of_prime Nat.prime_two hp hpgt.ne]
+    padicValNat.self hp.one_lt, padicValNat_eq_zero_of_ne_of_prime Nat.prime_two hp hpgt.ne, zero_add, mul_one]
 
 /-- If prime numbers $p,q$ are not equal then `(p ^ 2 * q).factorization q = 1`. -/
 lemma factorization_q_p2q {p q : ℕ} (hp : p.Prime) (hq : q.Prime) (h : p ≠ q) :
