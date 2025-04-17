@@ -13,3 +13,4 @@ import SolvabilityLt60.OrderLe6
 import SolvabilityLt60.OrderLe12
 import SolvabilityLt60.OrderLe24
 import SolvabilityLt60.SpecialCases
+import SolvabilityLt60.OrderLt60
