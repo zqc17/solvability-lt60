@@ -9,3 +9,6 @@ import SolvabilityLt60.SimplicityLt60.Card
 import SolvabilityLt60.SimplicityLt60.Order30
 import SolvabilityLt60.SimplicityLt60.Order56
 import SolvabilityLt60.Lemmas
+import SolvabilityLt60.OrderLe6
+import SolvabilityLt60.OrderLe12
+import SolvabilityLt60.OrderLe24
